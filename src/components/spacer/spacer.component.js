@@ -5,6 +5,8 @@ const sizeVariant = {
   small: 1,
   medium: 2,
   large: 3,
+  xl: 4,
+  xxl: 5,
 };
 
 const positionVariant = {
@@ -22,15 +24,9 @@ const getVariant = (position, size, theme) => {
   return `${property}:${value}`;
 };
 
-// no need for IOS
 const SpacerView = styled.View`
   ${({ variant }) => variant};
 `;
-
-// crash on Android
-// export const Spacer = styled(View)`
-//   ${({ theme, position, size }) => getVariant(theme, position, size)};
-// `;
 
 export const Spacer = ({ position, size, children }) => {
   const theme = useTheme();

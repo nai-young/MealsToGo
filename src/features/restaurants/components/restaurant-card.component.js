@@ -4,6 +4,7 @@ import star from '../../../../assets/star';
 import open from '../../../../assets/open';
 import close from '../../../../assets/close';
 import * as S from './restaurant-card.styles';
+import { Favourite } from '../../../components/favourites/favourite.component';
 
 export const RestaurantCard = ({ restaurant = {} }) => {
   const {
@@ -16,19 +17,26 @@ export const RestaurantCard = ({ restaurant = {} }) => {
     isOpenNow = true,
     rating = 4,
     isClosedTemporarily = false,
+    placeId,
   } = restaurant;
 
   const ratingArray = Array.from(new Array(Math.ceil(rating)));
 
   return (
     <S.StyledRestaurantCard elevation={5}>
+      <Favourite restaurant={restaurant}/>
       <S.RestaurantCover key={name} source={{ uri: photos[0] }} />
       <S.Info>
         <S.Title>{name}</S.Title>
         <S.Section>
           <S.Rating>
             {ratingArray.map((_, i) => (
-              <SvgXml key={i} xml={star} width={20} height={20} />
+              <SvgXml
+                key={`star-${placeId}-${i}`}
+                xml={star}
+                width={20}
+                height={20}
+              />
             ))}
           </S.Rating>
           <S.SectionEnd>

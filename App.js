@@ -1,48 +1,28 @@
 import React from 'react';
-import { StatusBar, Text } from 'react-native';
 import { ThemeProvider } from 'styled-components';
-import { RestaurantsScreen } from './src/features/restaurants/screens/restaurants.screen';
-import { RestaurantsContextProvider } from './src/services/restaurants/mock/restaurants.context';
 import { theme } from './src/infrastructure/theme';
 import { useFonts, Oswald_400Regular } from '@expo-google-fonts/oswald';
 import { Lato_400Regular } from '@expo-google-fonts/lato';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
-import { SafeArea } from './src/components/utility/safe-area.component';
-import { Ionicons } from '@expo/vector-icons';
+import { Navigation } from './src/infrastructure/navigation';
+import { getApps, initializeApp } from 'firebase/app';
+import { AuthenticationContextProvider } from './src/services/authentication/authentication.context';
 
-const Tab = createBottomTabNavigator();
-
-const TAB_ICON = {
-  Restaurants: 'md-restaurant',
-  Map: 'md-map',
-  Settings: 'md-settings',
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
 
-const tabBarIcon =
-  (iconName) =>
-  ({ size, color }) =>
-    <Ionicons name={iconName} size={size} color={color} />;
+const apps = getApps();
 
-const screenOptions = ({ route }) => {
-  const iconName = TAB_ICON[route.name];
-  return {
-    tabBarIcon: tabBarIcon(iconName),
-    tabBarActiveTintColor: 'tomato',
-    tabBarInactiveTintColor: 'gray',
-  };
-};
-
-const Setting = () => (
-  <SafeArea>
-    <Text>Setting Tab</Text>
-  </SafeArea>
-);
-const Map = () => (
-  <SafeArea>
-    <Text>Map Tab</Text>
-  </SafeArea>
-);
+if (!apps.length) {
+  initializeApp(firebaseConfig);
+}
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -53,18 +33,10 @@ export default function App() {
   if (!fontsLoaded) return null;
 
   return (
-    <>
-      <ThemeProvider theme={theme}>
-        <RestaurantsContextProvider>
-          <NavigationContainer>
-            <Tab.Navigator screenOptions={screenOptions}>
-              <Tab.Screen name='Restaurants' component={RestaurantsScreen} />
-              <Tab.Screen name='Map' component={Setting} />
-              <Tab.Screen name='Settings' component={Map} />
-            </Tab.Navigator>
-          </NavigationContainer>
-        </RestaurantsContextProvider>
-      </ThemeProvider>
-    </>
+    <ThemeProvider theme={theme}>
+      <AuthenticationContextProvider>
+        <Navigation />
+      </AuthenticationContextProvider>
+    </ThemeProvider>
   );
 }

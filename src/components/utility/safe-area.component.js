@@ -1,9 +1,8 @@
-import { SafeAreaView, Platform, StatusBar } from 'react-native';
+import { SafeAreaView, StatusBar } from 'react-native';
 import styled from 'styled-components';
-
-const isAndroid = Platform.OS === 'android';
 
 export const SafeArea = styled(SafeAreaView)`
   flex: 1;
-  ${StatusBar.currentHeight && `margin-top: ${StatusBar.currentHeight}px`};
+  // ${StatusBar.currentHeight && `margin-top: ${StatusBar.currentHeight}px`};
+  background-color: ${({ theme: { colors } }) => colors.bg.primary};
 `;
